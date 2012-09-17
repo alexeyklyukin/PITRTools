@@ -12,38 +12,48 @@ r_archivedir: /var/lib/postgresql/archive
 ; where to locally copy archives
 l_archivedir: /var/lib/postgresql/archive
 
-; where is rsync				
-rsync_bin: /usr/bin/rsync			
-
-; extra rsync flags
-rsync_flags: -z
-
-; option 2 or 3, if running RHEL5 or similar it is likely 2
-; if you are running something that ships remotely modern software
-; it will be 3
-
-rsync_version = 2
-
 ; IP of slave					
 slaves: 192.168.1.201,192.168.1.202
 
 ; the user that will be using scp				
 user: postgres					
 
+; rarely used options, expert only. Defaults are the values commented out:
+
+; option 2 or 3, if running RHEL5 or similar it is likely 2
+; if you are running something that ships remotely modern software
+; it will be 3. This affects the choice of either --remove-source-files (3) or
+; --remove-sent-files (2). Note that rsync 3 still supports --remove-sent-files
+; for compatibility reasons, so normally there is no need to think hard about it.
+
+;rsync_version = 2
+
+
+; extra rsync flags, default adds compression only.
+;rsync_flags: -z
+
+; where is rsync
+;rsync_bin: /usr/bin/rsync			
+
 ; if scp can't connect in 10 seconds error
-ssh_timeout: 10
+;ssh_timeout: 10
+
+; Below are notifications emitted after successfull (OK) or errorneuos
+; (WARNING, CRITICAL) completing of PITRTools actions. Default ones are just 
+; stubs. Instead, you can put a script to notify your monitoring system or
+; complain to the logs you regularly review.
 
 ; command to process in ok					
-notify_ok: echo OK
+;notify_ok: echo OK
 
 ; command to process in warning
-notify_warning:  echo WARNING
+;notify_warning:  echo WARNING
 
 ; command to process in critical
-notify_critical: echo CRITICAL
+;notify_critical: echo CRITICAL
 
 ; if you want to debug on/off only		 	
-debug: on
+;debug: on
 
-; if you want ssh debug (warning noisy)
-ssh_debug: off
+; if you want ssh debug (warning: extremely noisy, adds )
+;ssh_debug: off

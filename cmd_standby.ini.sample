@@ -21,21 +21,6 @@ repl_db_user: replication
 ; Password for the user repl_db_user.
 repl_db_password: secret
 
-; sslmode to use when connecting for streaming replication. 
-; Accepted values: the same as libpq: disable, allow, prefer, require, verify-ca and verify-full
-; Default: sslmode: prefer
-sslmode: prefer
-
-; Commands needed for execution
-; absolute path to ssh
-ssh: /usr/bin/ssh		
-
-; absolute path to rsync
-rsync: /usr/bin/rsync
-
-; extra rsync flags
-rsync_flags: -z
-
 ; the path to to the postgres bin		
 pg_standby: /usr/lib/postgresql/8.3/bin/pg_standby
 pg_ctl: /usr/lib/postgresql/8.3/bin/pg_ctl
@@ -46,25 +31,13 @@ r_psql: /usr/lib/postgresql/8.3/bin/psql
 ; Generalized information
 
 ; the port postgresql runs on (master)
-port: 6000
+port: 5432
 
 ; ip or name of master server 			
 master_public_ip: 192.168.3.254
 
-; the ip address we should use when processing remote shell		
-master_local_ip: 127.0.0.1
-
 ; the user performed initdb	
 user: postgres
-
-; on or off			
-debug: off	 	
-
-; on or off
-ssh_debug: off
-
-; the timeout for ssh before we throw an alarm
-ssh_timeout: 30			
 
 ; should be the same as r_archivedir for archiver
 archivedir: /data2/pgsql/archive/
@@ -75,31 +48,14 @@ pgdata: /data1/pgsql/data/
 ; Confs
 
 ; This is the postgresql.conf to be used when not in standby
-postgresql_conf: /var/lib/postgresql/etc/postgresql.conf		
+postgresql_conf: /var/lib/postgresql/etc/postgresql.conf
 
 ; This is the pg_hba.conf to be used when not in standby
-pg_hba_conf: /var/lib/postgresql/etc/pg_hba.conf		
-
-; By default postgresql.conf and pg_hba.conf will be copied from the
-; locations specified above to pgdata directory on failover.
-;
-; Uncomment the following to make postgres actually use the above conf
-; files w/o copying them to pgdata.
-;no_copy_conf: true
+pg_hba_conf: /var/lib/postgresql/etc/pg_hba.conf
 
 ; The recovery.conf file to create when starting up
 ; Defaults to %(pgdata)/recovery.conf
 recovery_conf: /var/lib/postgresql/etc/recovery.conf
-
-; Useful when postgresql.conf doesn't specify log destination
-; Will be passed with -l to pg_ctl when starting the server.
-;logfile: /var/log/postgresql/postgresql.log
-
-; Alarms
-
-notify_critical: ls
-notify_warning:
-notify_ok:
 
 ; On failover action
 
@@ -107,5 +63,48 @@ notify_ok:
 
 action_failover: /var/lib/postgresql/pitr_tools/failover.sh	
 
+; rarely used options, expert only. Defaults are the values commented out:
 
+; sslmode to use when connecting for streaming replication.
+; Accepted values: the same as libpq: disable, allow, prefer, require, verify-ca and verify-full
+; Default: sslmode: prefer
+;sslmode: prefer
 
+; Commands needed for execution
+; absolute path to ssh
+;ssh: /usr/bin/ssh
+
+; absolute path to rsync
+;rsync: /usr/bin/rsync
+
+; extra rsync flags
+;rsync_flags: -z
+
+; the ip address we should use when processing remote shell
+;master_local_ip: 127.0.0.1
+
+; on or off
+;debug: on
+
+; on or off
+;ssh_debug: off
+
+; the timeout for ssh before we throw an alarm
+;ssh_timeout: 30
+
+; By default postgresql.conf and pg_hba.conf will be copied from the
+; locations specified above to pgdata directory on failover.
+;
+; Uncomment the following to make postgres actually use the above conf
+; files w/o copying them to pgdata.
+;no_copy_conf: on
+
+; Useful when postgresql.conf doesn't specify log destination
+; Will be passed with -l to pg_ctl when starting the server.
+;logfile:
+
+; Alarms
+
+;notify_critical: echo OK
+;notify_warning: echo WARNING
+;notify_ok: echo CRITICAL
