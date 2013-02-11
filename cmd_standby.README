@@ -70,6 +70,10 @@ The process:
    PITRtools/bin/cmd_standby -C PITRtools/cmd_standby.ini -F999 -R '2008-05-28 11:00:38.059389'
 
  Where -R is a valid timestamp.
+ 
+ Note that a failover requires postgresql_conf_failover and pg_hba_conf_failover
+ to be set with paths to existing configuration files that replace existing ones
+ when the failover starts. If those options are not set, failover won't be perfomed.
 
 
 
@@ -142,7 +146,16 @@ Configuration:
 	The absolute path to the pg_standby binary
 
  pg_archivecleanup: /usr/lib/postgresql/9.0/bin/pg_archivecleanup
- 	The absolute path to the pg_archivecleanup binary. Unused on PostgreSQL 8.4 and below.
+ 	
+	The absolute path to the pg_archivecleanup binary. This command is used
+	to cleanup WAL segments after they are archived on the standby. It's only
+	required when streaming_replication is enabled, otherwise pg_standby takes
+	care of the old WAL segments. Note that this command is required even if
+	WAL archiving is not configured on the primary: for one, running SR without
+	archiving WAL is discouraged for a number of reasons, among them overrun of 
+	wal_keep_segments, inability to switch timeslines for 9.2 and below. Another
+ 	reason is that we can't check from the standby whether archiving is enabled 
+	on master, to be on the safe side we assume it is.
 
  pg_ctl: /usr/lib/postgresql/8.4/bin/pg_ctl
 
@@ -186,9 +199,17 @@ Configuration:
 
  postgresql_conf: /var/lib/postgresql/PITRtools/pg_conf/postgresql.conf
 
-	The absolute path to the postgresql.conf to use when we failover.
+	The absolute path to the postgresql.conf to use when we enter the standby mode.
 
  pg_hba_conf: /var/lib/postgresql/PITRtools/pg_conf/ipg_hba.conf
+
+	The absolute path to the pg_hba.conf to use when we enter the standby mode.
+	
+ postgresql_conf_failover:
+
+	The absolute path to the postgresql.conf to use when we failover.
+
+ pg_hba_conf_failover:
 
 	The absolute path to the pg_hba.conf to use when we failover.
 

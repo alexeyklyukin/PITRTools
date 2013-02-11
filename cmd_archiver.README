@@ -126,8 +126,9 @@ More about options:
 
  --init
 
-  Used to create the appropriate archive/queue file directories.
-
+  Used to create the appropriate archive/queue file directories. You'll receive
+  a warning if the archive directory already exists and it's empty. If a non-empty
+  directory is detected, cmd_archiver bails out to avoid overwriting existing data.
 
 
 cmd_archiver.ini options:
